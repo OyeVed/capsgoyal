@@ -5,11 +5,6 @@ $DB_USERNAME = 'capsgr9s_excel';
 $DB_PASSWORD = 'capsgr9s@@9911';
 $DB_DBNAME = 'capsgr9s_goyal';
 
-$DB_HOSTNAME = 'localhost';
-$DB_USERNAME = 'root';
-$DB_PASSWORD = '';
-$DB_DBNAME = 'capsgoyal';
-
 $dbcon = new mysqli($DB_HOSTNAME, $DB_USERNAME, $DB_PASSWORD, $DB_DBNAME);
 
 $sql = "SELECT
