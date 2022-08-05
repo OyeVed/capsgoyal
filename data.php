@@ -27,6 +27,7 @@ GROUP BY tbltaggables.tag_id";
 $result = $dbcon->query($sql);
 
 $status_headings = array();
+$status_heading_names = array();
 $data = array();
 
 while($row = $result->fetch_assoc()){
@@ -51,8 +52,12 @@ while($row = $result->fetch_assoc()){
     $inner_sql = "SELECT
     tbltasks.id,
     tbltasks.name,
-    tbltasks.status
+    tbltasks.status,
+    tblsi_custom_status.name AS 'name1',
+    tbltickets_status.name AS 'name2'
     FROM tbltasks
+    LEFT JOIN tblsi_custom_status ON tblsi_custom_status.id = tbltasks.status
+    LEFT JOIN tbltickets_status ON tbltickets_status.ticketstatusid = tbltasks.status
     WHERE tbltasks.id in $row[ids]";
 
     $inner_result = $dbcon->query($inner_sql);
@@ -67,6 +72,14 @@ while($row = $result->fetch_assoc()){
 
         if(!in_array($inner_row['status'], $status_headings) ){
             array_push($status_headings, $inner_row['status']);
+
+            $heading_name = '';
+            if($inner_row['name1'] != NULL){
+                $heading_name = $inner_row['name1'];
+            }elseif($inner_row['name2'] != NULL){
+                $heading_name = $inner_row['name2'];
+            }
+            array_push($status_heading_names, $heading_name);
         }
 
         if(isset($status_expanded_element[$inner_row['name']][$inner_row['status']])){
@@ -89,5 +102,6 @@ while($row = $result->fetch_assoc()){
 header('Content-Type: application/json');
 echo json_encode([
     "status_headings" => $status_headings,
+    "status_heading_names" => $status_heading_names,
     "data" => $data
 ]);

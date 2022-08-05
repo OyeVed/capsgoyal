@@ -238,16 +238,9 @@
 
                         for (let m = 0; m < element_expand_status.length; m++) {
                             const element_expand_status_object_inner = element_expand_status_object[element_expand_status[m]]
-                            // console.log(`${element_expand_status[m]} : ${element_expand_status_object_inner}`)
-
                             for (let n = 0; n < headers.length; n++) {
-
-                                console.log(`${element_expand_status[m]} : ${headers[n]}`)
-
                                 if (element_expand_status[m] === headers[n])
                                     task_array[n] = element_expand_status_object_inner;
-                                // else status_expand_string = status_expand_string + `<td style="width:60px;">-</td>`
-                                // status_expand_string = status_expand_string + `<td style="width:60px;">${element_expand_status_object_inner}</td>`
                             }
                         }
 
