@@ -132,19 +132,23 @@
 <!-- END: -->
 <div class="container">
     <div class="col-md-12">
-        <div class="panel panel-default">
+        <div class="panel panel-0" style="overflow: auto;">
             <div class="panel-heading">
                 Capsgoyal
             </div>
             <div class="panel-body">
                 <table class="table table-condensed table-bordered ">
                     <thead>
+                        <tr id="all_task_percentage_row"></tr>
+                        <tr id="all_task_status_row"></tr>
                         <tr>
-                            <th colspan="3">COUNTA of name</th>
+                            <th style="width:40px;"></th>
+                            <th colspan="2" style="width:300px;">Summary task report</th>
                             <th id="status_heading" colspan="9999999">Status</th>
                         </tr>
                         <tr id="headers_row">
                         </tr>
+                        <tr id="code_row"></tr>
                     </thead>
 
                     <tbody id="table_body">
@@ -157,13 +161,24 @@
     </div>
 </div>
 <script>
-
+    let isLogin = sessionStorage.getItem('isLogin')
+    if (isLogin != 'true') {
+        location.href = 'login.html'
+    }
     let headers = []
     let dataRow = []
+    let allTaskStatus = []
+    let grand_total = 0;
     let headers_row = document.getElementById('headers_row')
     let table_body = document.getElementById('table_body')
     headers_row.innerHTML = ''
     table_body.innerHTML = ''
+    let all_task_status_row = document.getElementById('all_task_status_row')
+    let all_task_percentage_row = document.getElementById('all_task_percentage_row')
+    let code_row = document.getElementById('code_row')
+    code_row.innerHTML = ''
+    all_task_percentage_row.innerHTML = ''
+    all_task_status_row.innerHTML = ''
     $("div.spanner").addClass("show");
     $("div.overlay").addClass("show");
     axios({
@@ -176,30 +191,39 @@
 
             headers = data?.status_headings;
             dataRow = data?.data
+            for (let i = 0; i < headers.length; i++) {
+                const element = headers[i];
+                allTaskStatus?.push(0)
+            }
+
             document.getElementById('status_heading').colspan = data?.status_headings?.length
-            headers_row.innerHTML = `<th style="width:50px;"></th><th style="width:150px;">Tag</th><th style="width:150px;">Name</th>`
+            headers_row.innerHTML = `<th style="width:40px;"></th><th style="width:150px;">Category</th><th style="width:150px;">Task Name</th><th style="width:60px;">Total</th>`
+            code_row.innerHTML = `<th style="width:40px;"></th><th style="width:300px;" colspan="2">Code</th><th style="width:60px;"></th>`
             for (let i = 0; i < data?.status_headings.length; i++) {
                 const element = data?.status_headings[i];
-                headers_row.innerHTML = headers_row.innerHTML + `<th style="width:60px;">${element}</th>`
+                headers_row.innerHTML = headers_row.innerHTML + `<th style="width:80px;">${response?.data?.status_heading_names[i]}</th>`
+                code_row.innerHTML = code_row.innerHTML + `<th style="width:80px;">${element}</th>`
             }
-            headers_row.innerHTML = headers_row.innerHTML + `<th>Grand Total</th>`;
             for (let j = 0; j < dataRow.length; j++) {
                 const element = dataRow[j];
                 let statusString = ''
                 for (let k = 0; k < headers.length; k++) {
                     let statusValue = element?.Status_Collapsed[headers[k]]
-                    if (statusValue)
-                        statusString = statusString + `<td>${statusValue}</td>`
-                    else statusString = statusString + `<td>-</td>`
+                    if (statusValue) {
+                        allTaskStatus[k] = allTaskStatus[k] + parseInt(statusValue)
+                        statusString = statusString + `<td style="width:80px;">${statusValue}</td>`
+                    }
+                    else statusString = statusString + `<td style="width:80px;">-</td>`
                 }
+                grand_total = grand_total + parseInt(element['Grand Total'])
                 table_body.innerHTML = table_body.innerHTML +
                     `<tr data-toggle="collapse" data-target="#demo_${j}" class="accordion-toggle">
                     <td><button class="btn btn-default btn-xs"><span
                                         class="glyphicon glyphicon-eye-open"></span></button></td>
                     <td>${element?.Tag}</td>
                     <td>-</td>
+                    <td style="width:60px;">${element['Grand Total']}</td>
                     ${statusString}
-                    <td>${element['Grand Total']}</td>
                 </tr>
                 `
                 if (element?.Status_Expanded?.length) {
@@ -212,7 +236,6 @@
                         const element_expand_status_object = element_expand?.Status
                         const element_expand_status = Object.keys(element_expand?.Status)
 
-                        console.log(element_expand?.Task)
                         const task_array = Array(headers.length)
 
                         for (let m = 0; m < element_expand_status.length; m++) {
@@ -225,19 +248,19 @@
 
                         for (let m = 0; m < task_array.length; m++) {
                             if (task_array[m])
-                                status_expand_string = status_expand_string + `<td style="width:60px;">${task_array[m]}</td>`
+                                status_expand_string = status_expand_string + `<td style="width:80px;">${task_array[m]}</td>`
                             else
-                                status_expand_string = status_expand_string + `<td style="width:60px;">-</td>`
+                                status_expand_string = status_expand_string + `<td style="width:80px;">-</td>`
                         }
 
                         tbodyString = tbodyString +
                             `
                                 <tr>
-                                    <td style="width:50px;"></td>
-                                    <td style="width:150px;"></td>
-                                    <td style="width:150px;">${element_expand?.Task}</td>
+                                    <td style="width:38px;"></td>
+                                    <td style="width:146px;"></td>
+                                    <td style="width:145px;">${element_expand?.Task}</td>
+                                    <td style="width:58px;">-</td>
                                     ${status_expand_string}
-                                    <td>-</td>
                                 </tr>
                             `
                     }
@@ -246,11 +269,9 @@
                         `
             <tr>
                 <td colspan="${spanCount}" class="hiddenRow">
-                                <div class="accordian-body collapse" id="demo_${j}">
-                                    <table class="table table-bordered ">
-                                        <tbody>
+                                <div style="overflow: auto;" class="accordian-body collapse" id="demo_${j}">
+                                    <table class="table table-condensed  table-bordered ">
                                             ${tbodyString}
-                                        </tbody>
                                     </table>
                                 </div>
                  </td>
@@ -260,6 +281,23 @@
             }
             $("div.spanner").removeClass("show");
             $("div.overlay").removeClass("show");
+            let actual_grand = 0;
+            for (let i = 0; i < allTaskStatus.length; i++) {
+                actual_grand = actual_grand + allTaskStatus[i]
+            }
+            let difference = grand_total - actual_grand
+            if (difference < 0) {
+                difference = -difference
+            }
+            all_task_percentage_row.innerHTML = `<th  style="text-align:center;border-left:none;border-right:none;" colspan="4">Percentage of Completion</th>`
+            all_task_status_row.innerHTML = `<th>${difference}</th><th colspan="2" style="text-align:center;border-right:none;">All Task Status</th><th style="border-left:none;border-right:none;">${grand_total}</th>`
+            for (let i = 0; i < allTaskStatus.length; i++) {
+                const element = allTaskStatus[i];
+                const percent = Math.round((element / grand_total) * 100)
+                all_task_status_row.innerHTML = all_task_status_row.innerHTML + `<th style="border-left:none;border-right:none;">${element}</th>`;
+                all_task_percentage_row.innerHTML = all_task_percentage_row.innerHTML + `<th style="border-left:none;border-right:none;">${percent}%</th>`
+            }
+
         })
         .catch(function (error) {
             $("div.spanner").removeClass("show");
