@@ -161,7 +161,10 @@
     </div>
 </div>
 <script>
-
+    let isLogin = sessionStorage.getItem('isLogin')
+    if (isLogin != 'true') {
+        location.href = 'login.html'
+    }
     let headers = []
     let dataRow = []
     let allTaskStatus = []
@@ -172,7 +175,7 @@
     table_body.innerHTML = ''
     let all_task_status_row = document.getElementById('all_task_status_row')
     let all_task_percentage_row = document.getElementById('all_task_percentage_row')
-    let code_row  = document.getElementById('code_row')
+    let code_row = document.getElementById('code_row')
     code_row.innerHTML = ''
     all_task_percentage_row.innerHTML = ''
     all_task_status_row.innerHTML = ''
@@ -198,8 +201,8 @@
             code_row.innerHTML = `<th style="width:30px;"></th><th style="width:300px;" colspan="2">Code</th><th style="width:60px;"></th>`
             for (let i = 0; i < data?.status_headings.length; i++) {
                 const element = data?.status_headings[i];
-                headers_row.innerHTML = headers_row.innerHTML + `<th style="width:60px;">${element}</th>`
-                code_row.innerHTML = code_row.innerHTML + `<th style="width:60px;">${element}</th>`
+                headers_row.innerHTML = headers_row.innerHTML + `<th style="width:80px;">${response?.data?.status_heading_names[i]}</th>`
+                code_row.innerHTML = code_row.innerHTML + `<th style="width:80px;">${element}</th>`
             }
             for (let j = 0; j < dataRow.length; j++) {
                 const element = dataRow[j];
@@ -233,7 +236,6 @@
                         const element_expand_status_object = element_expand?.Status
                         const element_expand_status = Object.keys(element_expand?.Status)
 
-                        console.log(element_expand?.Task)
                         const task_array = Array(headers.length)
 
                         for (let m = 0; m < element_expand_status.length; m++) {

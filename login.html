@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         body {
             background: #34495e;
@@ -47,7 +49,7 @@
             text-align: left;
         }
 
-        input[type=text] {
+        input[type=email] {
             background-color: #1A2226;
             border: none;
             border-bottom: 2px solid #0DB8DE;
@@ -261,16 +263,17 @@
                     <div class="col-lg-12 login-form">
                         <form>
                             <div class="form-group">
-                                <label class="form-control-label">USERNAME</label>
-                                <input type="text" class="form-control">
+                                <label class="form-control-label">E-MAIL</label>
+                                <input type="email" class="form-control" id="user_email">
                             </div>
                             <div class="form-group">
                                 <label class="form-control-label">PASSWORD</label>
-                                <input type="password" class="form-control">
+                                <input type="password" class="form-control" id="user_password">
                             </div>
 
                             <div class="col-lg-6  d-flex justify-content-center w-100">
-                                <button type="button" class="btn btn-outline-primary">LOGIN</button>
+                                <button type="button" onclick="handleLogin()"
+                                    class="btn btn-outline-primary">LOGIN</button>
                             </div>
                         </form>
                     </div>
@@ -281,6 +284,38 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
             crossorigin="anonymous"></script>
+        <script>
+            async function handleLogin() {
+                let user_email = document.getElementById('user_email')
+                let user_password = document.getElementById('user_password')
+                if (user_email?.value == "" || user_password?.value == "") {
+                    alert("Please enter all details.");
+                    return
+                }
+                $("div.spanner").addClass("show");
+                $("div.overlay").addClass("show");
+                try {
+                    const response = await axios.post('/capsgoyal/login.php', {
+                        email: user_email.value,
+                        password: user_password.value
+                    })
+                    if (response?.status == 200) {
+                        sessionStorage.setItem('isLogin', 'true');
+                        location.href = 'index.html'
+                    }
+                    if (response?.status == 203) {
+                        alert(response?.data?.message)
+                    }
+                } catch (error) {
+                    console.log(error)
+                } finally {
+                    $("div.spanner").removeClass("show");
+                    $("div.overlay").removeClass("show");
+                }
+
+
+            }
+        </script>
 </body>
 
 </html>

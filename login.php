@@ -34,11 +34,11 @@ if($result){
             ));
     }
     else{
-        http_response_code(401);
+        http_response_code(203);
         echo json_encode(array("message" => "Login failed."));
     }
 }else{
-    http_response_code(404);
+    http_response_code(203);
     echo json_encode(array("message" => "Login failed. User Not Found"));
 }
 ?>
