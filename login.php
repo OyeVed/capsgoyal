@@ -21,7 +21,7 @@ if($result){
     $email = $result['user_email'];
     $correct_password = $result['user_password'];
 
-    if(md5($password) == $correct_password)
+    if($password == $correct_password)
     {
         $token = md5($email);
 
