@@ -132,7 +132,7 @@
 <!-- END: -->
 <div class="container">
     <div class="col-md-12">
-        <div class="panel panel-0">
+        <div class="panel panel-0" style="overflow: auto;">
             <div class="panel-heading">
                 Capsgoyal
             </div>
@@ -142,8 +142,8 @@
                         <tr id="all_task_percentage_row"></tr>
                         <tr id="all_task_status_row"></tr>
                         <tr>
-                            <th style="width:30px;"></th>
-                            <th colspan="2">Summary task report</th>
+                            <th style="width:40px;"></th>
+                            <th colspan="2" style="width:300px;">Summary task report</th>
                             <th id="status_heading" colspan="9999999">Status</th>
                         </tr>
                         <tr id="headers_row">
@@ -197,8 +197,8 @@
             }
 
             document.getElementById('status_heading').colspan = data?.status_headings?.length
-            headers_row.innerHTML = `<th style="width:30px;"></th><th style="width:150px;">Category</th><th style="width:150px;">Task Name</th><th style="width:60px;">Total</th>`
-            code_row.innerHTML = `<th style="width:30px;"></th><th style="width:300px;" colspan="2">Code</th><th style="width:60px;"></th>`
+            headers_row.innerHTML = `<th style="width:40px;"></th><th style="width:150px;">Category</th><th style="width:150px;">Task Name</th><th style="width:60px;">Total</th>`
+            code_row.innerHTML = `<th style="width:40px;"></th><th style="width:300px;" colspan="2">Code</th><th style="width:60px;"></th>`
             for (let i = 0; i < data?.status_headings.length; i++) {
                 const element = data?.status_headings[i];
                 headers_row.innerHTML = headers_row.innerHTML + `<th style="width:80px;">${response?.data?.status_heading_names[i]}</th>`
@@ -211,9 +211,9 @@
                     let statusValue = element?.Status_Collapsed[headers[k]]
                     if (statusValue) {
                         allTaskStatus[k] = allTaskStatus[k] + parseInt(statusValue)
-                        statusString = statusString + `<td>${statusValue}</td>`
+                        statusString = statusString + `<td style="width:80px;">${statusValue}</td>`
                     }
-                    else statusString = statusString + `<td>-</td>`
+                    else statusString = statusString + `<td style="width:80px;">-</td>`
                 }
                 grand_total = grand_total + parseInt(element['Grand Total'])
                 table_body.innerHTML = table_body.innerHTML +
@@ -222,7 +222,7 @@
                                         class="glyphicon glyphicon-eye-open"></span></button></td>
                     <td>${element?.Tag}</td>
                     <td>-</td>
-                    <td>${element['Grand Total']}</td>
+                    <td style="width:60px;">${element['Grand Total']}</td>
                     ${statusString}
                 </tr>
                 `
@@ -248,19 +248,19 @@
 
                         for (let m = 0; m < task_array.length; m++) {
                             if (task_array[m])
-                                status_expand_string = status_expand_string + `<td style="width:60px;">${task_array[m]}</td>`
+                                status_expand_string = status_expand_string + `<td style="width:80px;">${task_array[m]}</td>`
                             else
-                                status_expand_string = status_expand_string + `<td style="width:60px;">-</td>`
+                                status_expand_string = status_expand_string + `<td style="width:80px;">-</td>`
                         }
 
                         tbodyString = tbodyString +
                             `
                                 <tr>
-                                    <td style="width:30px;"></td>
-                                    <td style="width:150px;"></td>
-                                    <td style="width:150px;">${element_expand?.Task}</td>
+                                    <td style="width:38px;"></td>
+                                    <td style="width:146px;"></td>
+                                    <td style="width:145px;">${element_expand?.Task}</td>
+                                    <td style="width:58px;">-</td>
                                     ${status_expand_string}
-                                    <td>-</td>
                                 </tr>
                             `
                     }
@@ -269,11 +269,9 @@
                         `
             <tr>
                 <td colspan="${spanCount}" class="hiddenRow">
-                                <div class="accordian-body collapse" id="demo_${j}">
-                                    <table class="table table-bordered ">
-                                        <tbody>
+                                <div style="overflow: auto;" class="accordian-body collapse" id="demo_${j}">
+                                    <table class="table table-condensed  table-bordered ">
                                             ${tbodyString}
-                                        </tbody>
                                     </table>
                                 </div>
                  </td>
