@@ -193,7 +193,7 @@
     $("div.overlay").addClass("show");
     axios({
         method: "get",
-        url: `/capsgoyal/data.php`,
+        url: `/data.php`,
     })
         .then(function (response) {
             console.log(response)
@@ -266,7 +266,7 @@
                         tbodyString = tbodyString +
                             `
                                 <tr class="hiddenRow_${j} hide_row">
-                                    <td style="width:38px;"></td>
+                                    <td style="width:40px;"></td>
                                     <td style="width:150px;"></td>
                                     <td style="width:150px;">${element_expand?.Task}</td>
                                     <td style="width:60px;">-</td>
