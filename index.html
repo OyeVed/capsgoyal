@@ -137,8 +137,14 @@
 <div class="container">
     <div class="col-md-12">
         <div class="panel panel-0" style="overflow: auto;">
-            <div class="panel-heading">
-                Capsgoyal
+            <div style="display: flex;justify-content: space-between;align-items: center;">
+                <div class="panel-heading">
+                    Capsgoyal
+                </div>
+                <div id="all_button_container">
+                    <button style="outline: none;margin-right: 30px;" class="btn btn-default btn-xs"
+                        onclick="handleAllClick('show')" id="show_btn">Show All</button>
+                </div>
             </div>
             <div class="panel-body">
                 <table class="table table-condensed table-bordered ">
@@ -222,7 +228,7 @@
                 grand_total = grand_total + parseInt(element['Grand Total'])
                 table_body.innerHTML = table_body.innerHTML +
                     `<tr data-toggle="collapse" data-target="#demo_${j}" onclick="updateArrow(${j},event)" class="accordion-toggle">
-                    <td><button class="btn btn-default btn-xs"  id="action_btn_${j}"><span
+                    <td><button style="outline:none;" class="btn btn-default btn-xs"  id="action_btn_${j}"><span
                                         class="glyphicon glyphicon-chevron-right"></span></button></td>
                     <td>${element?.Tag}</td>
                     <td>-</td>
@@ -272,15 +278,6 @@
                     table_body.innerHTML = table_body.innerHTML +
                         ` ${tbodyString}
                         `
-                    // <tr>
-                    //     <td colspan="${spanCount}" class="hiddenRow">
-                    //                     <div style="overflow: auto;" class="accordian-body collapse" id="demo_${j}">
-                    //                         <table class="table table-condensed  table-bordered ">
-                    //                                 ${tbodyString}
-                    //                         </table>
-                    //                     </div>
-                    //      </td>
-                    //  </tr>
                 }
             }
             $("div.spanner").removeClass("show");
@@ -322,6 +319,29 @@
             for (let el of collectedNodes) {
                 $(el).addClass('hide_row')
             }
+        }
+    }
+    function handleAllClick(mode) {
+        let showBtn = document.getElementById('show_btn');
+
+        if (showBtn.innerHTML == 'Show All') {
+            for (let i = 0; i < dataRow.length; i++) {
+                let collectedNodes = document.getElementsByClassName(`hiddenRow_${i}`);
+                for (let el of collectedNodes) {
+                    $(el).removeClass('hide_row')
+                }
+                document.getElementById(`action_btn_${i}`).innerHTML = `<span class="glyphicon glyphicon-chevron-down"></span>`
+            }
+            showBtn.innerHTML = 'Hide All'
+        } else {
+            for (let i = 0; i < dataRow.length; i++) {
+                let collectedNodes = document.getElementsByClassName(`hiddenRow_${i}`);
+                for (let el of collectedNodes) {
+                    $(el).addClass('hide_row')
+                }
+                document.getElementById(`action_btn_${i}`).innerHTML = `<span class="glyphicon glyphicon-chevron-right"></span>`
+            }
+            showBtn.innerHTML = 'Show All'
         }
     }
 </script>
