@@ -122,6 +122,10 @@
     .overlay.show {
         opacity: 1;
     }
+
+    .hide_row {
+        display: none;
+    }
 </style>
 <!-- NOTE: START: -->
 <!-- loader -->
@@ -183,7 +187,7 @@
     $("div.overlay").addClass("show");
     axios({
         method: "get",
-        url: `/data.php`,
+        url: `/capsgoyal/data.php`,
     })
         .then(function (response) {
             console.log(response)
@@ -217,9 +221,9 @@
                 }
                 grand_total = grand_total + parseInt(element['Grand Total'])
                 table_body.innerHTML = table_body.innerHTML +
-                    `<tr data-toggle="collapse" data-target="#demo_${j}" class="accordion-toggle">
-                    <td><button class="btn btn-default btn-xs"><span
-                                        class="glyphicon glyphicon-eye-open"></span></button></td>
+                    `<tr data-toggle="collapse" data-target="#demo_${j}" onclick="updateArrow(${j},event)" class="accordion-toggle">
+                    <td><button class="btn btn-default btn-xs"  id="action_btn_${j}"><span
+                                        class="glyphicon glyphicon-chevron-right"></span></button></td>
                     <td>${element?.Tag}</td>
                     <td>-</td>
                     <td style="width:60px;">${element['Grand Total']}</td>
@@ -255,28 +259,28 @@
 
                         tbodyString = tbodyString +
                             `
-                                <tr>
+                                <tr class="hiddenRow_${j} hide_row">
                                     <td style="width:38px;"></td>
-                                    <td style="width:146px;"></td>
-                                    <td style="width:145px;">${element_expand?.Task}</td>
-                                    <td style="width:58px;">-</td>
+                                    <td style="width:150px;"></td>
+                                    <td style="width:150px;">${element_expand?.Task}</td>
+                                    <td style="width:60px;">-</td>
                                     ${status_expand_string}
                                 </tr>
                             `
                     }
                     let spanCount = 3 + headers.length + 1;
                     table_body.innerHTML = table_body.innerHTML +
+                        ` ${tbodyString}
                         `
-            <tr>
-                <td colspan="${spanCount}" class="hiddenRow">
-                                <div style="overflow: auto;" class="accordian-body collapse" id="demo_${j}">
-                                    <table class="table table-condensed  table-bordered ">
-                                            ${tbodyString}
-                                    </table>
-                                </div>
-                 </td>
-             </tr>
-            `
+                    // <tr>
+                    //     <td colspan="${spanCount}" class="hiddenRow">
+                    //                     <div style="overflow: auto;" class="accordian-body collapse" id="demo_${j}">
+                    //                         <table class="table table-condensed  table-bordered ">
+                    //                                 ${tbodyString}
+                    //                         </table>
+                    //                     </div>
+                    //      </td>
+                    //  </tr>
                 }
             }
             $("div.spanner").removeClass("show");
@@ -304,4 +308,20 @@
             $("div.overlay").removeClass("show");
             console.log(error)
         });
+    function updateArrow(id, event) {
+        if (document.getElementById(`action_btn_${id}`).innerHTML == `<span class="glyphicon glyphicon-chevron-right"></span>`) {
+            document.getElementById(`action_btn_${id}`).innerHTML = `<span class="glyphicon glyphicon-chevron-down"></span>`
+            let collectedNodes = document.getElementsByClassName(`hiddenRow_${id}`);
+            for (let el of collectedNodes) {
+                $(el).removeClass('hide_row')
+            }
+        }
+        else {
+            document.getElementById(`action_btn_${id}`).innerHTML = `<span class="glyphicon glyphicon-chevron-right"></span>`
+            let collectedNodes = document.getElementsByClassName(`hiddenRow_${id}`);
+            for (let el of collectedNodes) {
+                $(el).addClass('hide_row')
+            }
+        }
+    }
 </script>
