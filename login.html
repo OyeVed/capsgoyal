@@ -295,7 +295,7 @@
                 $("div.spanner").addClass("show");
                 $("div.overlay").addClass("show");
                 try {
-                    const response = await axios.post('/login.php', {
+                    const response = await axios.post('/capsgoyal/login.php', {
                         email: user_email.value,
                         password: user_password.value
                     })

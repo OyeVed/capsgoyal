@@ -176,7 +176,9 @@
         location.href = 'login.html'
     }
     let headers = []
+    let header_names = []
     let dataRow = []
+    let actual_heading = ["Not Started", "Bkp_NR", "Bkp_Recd", "In progress", "Answered", "Pending For Challan", "Uploaded in SW", "Feedback", "On Hold", "Closed"]
     let allTaskStatus = []
     let grand_total = 0;
     let headers_row = document.getElementById('headers_row')
@@ -193,26 +195,41 @@
     $("div.overlay").addClass("show");
     axios({
         method: "get",
-        url: `/data.php`,
+        url: `/capsgoyal/data.php`,
     })
         .then(function (response) {
             console.log(response)
             let data = response?.data
 
             headers = data?.status_headings;
+            header_names = data?.status_heading_names
+            let filteredHeaders = []
+            let filterHeader_names = []
+            actual_heading?.forEach(ac => {
+                if (header_names?.includes(ac)) {
+                    filterHeader_names?.push(ac)
+                    let header_name_index = header_names?.findIndex(h => h == ac)
+                    header_names = header_names?.filter(h => h != ac)
+                    let removedValue = headers.splice(header_name_index, 1);
+                    filteredHeaders?.push(removedValue[0])
+                }
+            })
+            headers = [...filteredHeaders, ...headers]
+            header_names = [...filterHeader_names, ...header_names]
+
             dataRow = data?.data
             for (let i = 0; i < headers.length; i++) {
                 const element = headers[i];
                 allTaskStatus?.push(0)
             }
 
-            document.getElementById('status_heading').colspan = data?.status_headings?.length
-            headers_row.innerHTML = `<th style="width:40px;"></th><th style="width:150px;">Category</th><th style="width:150px;">Task Name</th><th style="width:60px;">Total</th>`
-            code_row.innerHTML = `<th style="width:40px;"></th><th style="width:300px;" colspan="2">Code</th><th style="width:60px;"></th>`
-            for (let i = 0; i < data?.status_headings.length; i++) {
-                const element = data?.status_headings[i];
-                headers_row.innerHTML = headers_row.innerHTML + `<th style="width:80px;">${response?.data?.status_heading_names[i]}</th>`
-                code_row.innerHTML = code_row.innerHTML + `<th style="width:80px;">${element}</th>`
+            document.getElementById('status_heading').colspan = headers?.length
+            headers_row.innerHTML = `<th style="width:40px;"></th><th style="width:150px;text-align:center;">Category</th><th style="width:150px;text-align:center;">Task Name</th><th style="width:60px;text-align:center;">Total</th>`
+            code_row.innerHTML = `<th style="width:40px;"></th><th style="width:300px;text-align:center;" colspan="2">Code</th><th style="width:60px;text-align:center;"></th>`
+            for (let i = 0; i < headers.length; i++) {
+                const element = headers[i];
+                headers_row.innerHTML = headers_row.innerHTML + `<th style="width:80px;text-align:center;">${header_names[i]}</th>`
+                code_row.innerHTML = code_row.innerHTML + `<th style="width:80px;text-align:center;">${element}</th>`
             }
             for (let j = 0; j < dataRow.length; j++) {
                 const element = dataRow[j];
@@ -221,18 +238,18 @@
                     let statusValue = element?.Status_Collapsed[headers[k]]
                     if (statusValue) {
                         allTaskStatus[k] = allTaskStatus[k] + parseInt(statusValue)
-                        statusString = statusString + `<td style="width:80px;">${statusValue}</td>`
+                        statusString = statusString + `<td style="width:80px;text-align:center;">${statusValue}</td>`
                     }
-                    else statusString = statusString + `<td style="width:80px;">-</td>`
+                    else statusString = statusString + `<td style="width:80px;text-align:center;">-</td>`
                 }
                 grand_total = grand_total + parseInt(element['Grand Total'])
                 table_body.innerHTML = table_body.innerHTML +
                     `<tr data-toggle="collapse" data-target="#demo_${j}" onclick="updateArrow(${j},event)" class="accordion-toggle">
                     <td><button style="outline:none;" class="btn btn-default btn-xs"  id="action_btn_${j}"><span
                                         class="glyphicon glyphicon-chevron-right"></span></button></td>
-                    <td>${element?.Tag}</td>
-                    <td>-</td>
-                    <td style="width:60px;">${element['Grand Total']}</td>
+                    <td >${element?.Tag}</td>
+                    <td style="text-align:center;">-</td>
+                    <td style="width:60px;text-align:center;">${element['Grand Total']}</td>
                     ${statusString}
                 </tr>
                 `
@@ -258,9 +275,9 @@
 
                         for (let m = 0; m < task_array.length; m++) {
                             if (task_array[m])
-                                status_expand_string = status_expand_string + `<td style="width:80px;">${task_array[m]}</td>`
+                                status_expand_string = status_expand_string + `<td style="width:80px;text-align:center;">${task_array[m]}</td>`
                             else
-                                status_expand_string = status_expand_string + `<td style="width:80px;">-</td>`
+                                status_expand_string = status_expand_string + `<td style="width:80px;text-align:center;">-</td>`
                         }
 
                         tbodyString = tbodyString +
@@ -268,8 +285,8 @@
                                 <tr class="hiddenRow_${j} hide_row">
                                     <td style="width:40px;"></td>
                                     <td style="width:150px;"></td>
-                                    <td style="width:150px;">${element_expand?.Task}</td>
-                                    <td style="width:60px;">-</td>
+                                    <td style="width:150px;text-align:center;">${element_expand?.Task}</td>
+                                    <td style="width:60px;text-align:center;">-</td>
                                     ${status_expand_string}
                                 </tr>
                             `
