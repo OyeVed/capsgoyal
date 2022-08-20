@@ -178,7 +178,7 @@
     let headers = []
     let header_names = []
     let dataRow = []
-    let actual_heading = ["Not Started", "Bkp_NR", "Bkp_Recd", "In progress", "Submitted", "Pending For Challan", "Uploaded in SW", "Feedback", "Testing", "Complete","Answered"]
+    // let actual_heading = ["Not Started", "Bkp_NR", "Bkp_Recd", "In progress", "Submitted", "Pending For Challan", "Uploaded in SW", "Feedback", "Testing", "Complete"]
     let allTaskStatus = []
     let grand_total = 0;
     let headers_row = document.getElementById('headers_row')
@@ -195,7 +195,7 @@
     $("div.overlay").addClass("show");
     axios({
         method: "get",
-        url: `/data.php`,
+        url: `/capsgoyal/data.php`,
     })
         .then(function (response) {
             console.log(response)
@@ -203,19 +203,19 @@
 
             headers = data?.status_headings;
             header_names = data?.status_heading_names
-            let filteredHeaders = []
-            let filterHeader_names = []
-            actual_heading?.forEach(ac => {
-                if (header_names?.includes(ac)) {
-                    filterHeader_names?.push(ac)
-                    let header_name_index = header_names?.findIndex(h => h == ac)
-                    header_names = header_names?.filter(h => h != ac)
-                    let removedValue = headers.splice(header_name_index, 1);
-                    filteredHeaders?.push(removedValue[0])
-                }
-            })
-            headers = [...filteredHeaders, ...headers]
-            header_names = [...filterHeader_names, ...header_names]
+            // let filteredHeaders = []
+            // let filterHeader_names = []
+            // actual_heading?.forEach(ac => {
+            //     if (header_names?.includes(ac)) {
+            //         filterHeader_names?.push(ac)
+            //         let header_name_index = header_names?.findIndex(h => h == ac)
+            //         header_names = header_names?.filter(h => h != ac)
+            //         let removedValue = headers.splice(header_name_index, 1);
+            //         filteredHeaders?.push(removedValue[0])
+            //     }
+            // })
+            // headers = [...filteredHeaders, ...headers]
+            // header_names = [...filterHeader_names, ...header_names]
 
             dataRow = data?.data
             for (let i = 0; i < headers.length; i++) {
@@ -308,12 +308,12 @@
                 difference = -difference
             }
             all_task_percentage_row.innerHTML = `<th  style="text-align:center;border-left:none;border-right:none;" colspan="4">Percentage of Completion</th>`
-            all_task_status_row.innerHTML = `<th>${difference}</th><th colspan="2" style="text-align:center;border-right:none;">All Task Status</th><th style="border-left:none;border-right:none;">${grand_total}</th>`
+            all_task_status_row.innerHTML = `<th>${difference}</th><th colspan="2" style="text-align:center;border-right:none;">All Task Status</th><th style="text-align:center;">${grand_total}</th>`
             for (let i = 0; i < allTaskStatus.length; i++) {
                 const element = allTaskStatus[i];
                 const percent = Math.round((element / grand_total) * 100)
-                all_task_status_row.innerHTML = all_task_status_row.innerHTML + `<th style="border-left:none;border-right:none;">${element}</th>`;
-                all_task_percentage_row.innerHTML = all_task_percentage_row.innerHTML + `<th style="border-left:none;border-right:none;">${percent}%</th>`
+                all_task_status_row.innerHTML = all_task_status_row.innerHTML + `<th style="text-align:center;">${element}</th>`;
+                all_task_percentage_row.innerHTML = all_task_percentage_row.innerHTML + `<th style="text-align:center;">${percent}%</th>`
             }
 
         })
