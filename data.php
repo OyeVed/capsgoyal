@@ -202,8 +202,8 @@ while($row = $result->fetch_assoc()){
     array_push($data, $data_element);
 }
 
-print_r($status_headings);
-print_r($status_heading_names);
+// print_r($status_headings);
+// print_r($status_heading_names);
 
 // Driver Code
 sortAccording($status_headings, $order, sizeof($status_headings), sizeof($order));
