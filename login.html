@@ -285,6 +285,15 @@
             integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
             crossorigin="anonymous"></script>
         <script>
+            function checkAuth() {
+                let authData = JSON.parse(localStorage.getItem('auth'))
+                if (authData == null) return
+                let diffInMs = new Date() - authData?.expiry
+                let diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+                if (diffInDays > 60) return
+                else location.href = 'index.html'
+            }
+            checkAuth()
             async function handleLogin() {
                 let user_email = document.getElementById('user_email')
                 let user_password = document.getElementById('user_password')
@@ -300,7 +309,11 @@
                         password: user_password.value
                     })
                     if (response?.status == 200) {
-                        sessionStorage.setItem('isLogin', 'true');
+                        const item = {
+                            value: true,
+                            expiry: new Date(),
+                        }
+                        localStorage.setItem('auth', JSON.stringify(item))
                         location.href = 'index.html'
                     }
                     if (response?.status == 203) {

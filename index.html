@@ -152,7 +152,8 @@
                         <tr>
                             <!-- <th style="width:40px;"></th> -->
                             <th colspan="4" style="width:340px;text-align: center;">Summary task report</th>
-                            <th id="status_heading" style="padding-left: 20px;text-align: center;" colspan="9999999">Status</th>
+                            <th id="status_heading" style="padding-left: 20px;text-align: center;" colspan="9999999">
+                                Status</th>
                         </tr>
                         <tr id="all_task_percentage_row"></tr>
                         <tr id="all_task_status_row"></tr>
@@ -171,10 +172,20 @@
     </div>
 </div>
 <script>
-    let isLogin = sessionStorage.getItem('isLogin')
-    if (isLogin != 'true') {
-        location.href = 'login.html'
+    // let isLogin = sessionStorage.getItem('isLogin')
+    // if (isLogin != 'true') {
+    //     location.href = 'login.html'
+    // }
+    function checkAuth() {
+        let authData = JSON.parse(localStorage.getItem('auth'))
+        if (authData == null) location.href = 'login.html'
+        else {
+            let diffInMs = new Date() - authData?.expiry
+            let diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+            if (diffInDays > 60) location.href = 'login.html'
+        }
     }
+    checkAuth()
     let headers = []
     let header_names = []
     let dataRow = []
@@ -203,19 +214,6 @@
 
             headers = data?.status_headings;
             header_names = data?.status_heading_names
-            // let filteredHeaders = []
-            // let filterHeader_names = []
-            // actual_heading?.forEach(ac => {
-            //     if (header_names?.includes(ac)) {
-            //         filterHeader_names?.push(ac)
-            //         let header_name_index = header_names?.findIndex(h => h == ac)
-            //         header_names = header_names?.filter(h => h != ac)
-            //         let removedValue = headers.splice(header_name_index, 1);
-            //         filteredHeaders?.push(removedValue[0])
-            //     }
-            // })
-            // headers = [...filteredHeaders, ...headers]
-            // header_names = [...filterHeader_names, ...header_names]
 
             dataRow = data?.data
             for (let i = 0; i < headers.length; i++) {
